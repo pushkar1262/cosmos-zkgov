@@ -21,6 +21,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/tx"
 	authtxconfig "github.com/cosmos/cosmos-sdk/x/auth/tx/config"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
+	zkgovtypes "github.com/cosmos/cosmos-sdk/x/zkgov/types"
 )
 
 // NewRootCmd creates a new root command for simd. It is called once in the
@@ -101,6 +102,9 @@ func NewRootCmd() *cobra.Command {
 	// add keyring to autocli opts
 	autoCliOpts := tempApp.AutoCliOpts()
 	autoCliOpts.ClientCtx = initClientCtx
+
+	// Ensure custom message types are registered on the client interface registry
+	zkgovtypes.RegisterInterfaces(initClientCtx.InterfaceRegistry)
 
 	nodeCmds := nodeservice.NewNodeCommands()
 	autoCliOpts.ModuleOptions[nodeCmds.Name()] = nodeCmds.AutoCLIOptions()

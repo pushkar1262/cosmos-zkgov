@@ -58,6 +58,10 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	_ "github.com/cosmos/cosmos-sdk/x/upgrade" // import for side-effects
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
+
+	// zkgov module
+	zkgov "github.com/cosmos/cosmos-sdk/x/zkgov"
+	zkgovtypes "github.com/cosmos/cosmos-sdk/x/zkgov/types"
 )
 
 var (
@@ -264,6 +268,7 @@ var (
 				govtypes.ModuleName: gov.NewAppModuleBasic(
 					[]govclient.ProposalHandler{},
 				),
+				zkgovtypes.ModuleName: zkgov.AppModuleBasic{},
 			},
 		),
 	)

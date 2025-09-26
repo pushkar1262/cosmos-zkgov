@@ -192,7 +192,14 @@ build-docs:
 # Usage: make install && make init-simapp && simd start
 # Warning: make init-simapp will remove all data in simapp home directory
 init-simapp:
-	./scripts/init-simapp.sh
+	bash ./scripts/init-simapp.sh
+	simd start
+
+reset-simapp:
+	rm -rf ~/.simapp/
+
+generate-zk-keys:
+	go run ./x/zkgov/client/zk/main.go ./x/zkgov/client/zk/keys.go
 
 test: test-unit
 test-e2e:

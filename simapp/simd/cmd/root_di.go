@@ -23,6 +23,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/tx"
 	authtxconfig "github.com/cosmos/cosmos-sdk/x/auth/tx/config"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
+	zkgovtypes "github.com/cosmos/cosmos-sdk/x/zkgov/types"
 )
 
 // NewRootCmd creates a new root command for simd. It is called once in the main function.
@@ -48,6 +49,9 @@ func NewRootCmd() *cobra.Command {
 	); err != nil {
 		panic(err)
 	}
+
+	// Ensure custom message types are registered on the client interface registry
+	zkgovtypes.RegisterInterfaces(clientCtx.InterfaceRegistry)
 
 	rootCmd := &cobra.Command{
 		Use:           "simd",

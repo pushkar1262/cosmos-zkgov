@@ -41,6 +41,11 @@ import (
 	slashingkeeper "github.com/cosmos/cosmos-sdk/x/slashing/keeper"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
+
+	// register custom interfaces for local modules not wired via AppConfig
+	zkgovmodule "github.com/cosmos/cosmos-sdk/x/zkgov"
+	zkgovkeeper "github.com/cosmos/cosmos-sdk/x/zkgov/keeper"
+	zkgovtypes "github.com/cosmos/cosmos-sdk/x/zkgov/types"
 )
 
 // DefaultNodeHome default home directories for the application daemon
@@ -213,6 +218,23 @@ func NewSimApp(
 	baseAppOptions = append(baseAppOptions, voteExtOp, baseapp.SetOptimisticExecution())
 
 	app.App = appBuilder.Build(db, traceStore, baseAppOptions...)
+
+	// Ensure custom message types are registered on the app interface registry
+	zkgovtypes.RegisterInterfaces(app.interfaceRegistry)
+
+	// Manually register zkgov module (non-depinject wiring): create store, keeper, module
+	{
+		zkKey := storetypes.NewKVStoreKey(zkgovtypes.StoreKey)
+		if err := app.RegisterStores(zkKey); err != nil {
+			panic(err)
+		}
+		zkStoreSvc := runtime.NewKVStoreService(zkKey)
+		zkKeeper := zkgovkeeper.NewKeeper(app.appCodec, zkStoreSvc)
+		zkModule := zkgovmodule.NewAppModule(app.appCodec, zkKeeper)
+		if err := app.RegisterModules(zkModule); err != nil {
+			panic(err)
+		}
+	}
 
 	// register streaming services
 	if err := app.RegisterStreamingServices(appOpts, app.kvStoreKeys()); err != nil {

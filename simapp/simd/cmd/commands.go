@@ -27,6 +27,7 @@ import (
 	authcmd "github.com/cosmos/cosmos-sdk/x/auth/client/cli"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
+	zkgovcli "github.com/cosmos/cosmos-sdk/x/zkgov/client/cli"
 )
 
 // initCometBFTConfig helps to override default CometBFT Config values.
@@ -157,6 +158,7 @@ func queryCommand() *cobra.Command {
 		server.QueryBlocksCmd(),
 		authcmd.QueryTxCmd(),
 		server.QueryBlockResultsCmd(),
+		zkgovcli.GetQueryCmd(),
 	)
 
 	return cmd
@@ -181,6 +183,7 @@ func txCommand() *cobra.Command {
 		authcmd.GetEncodeCommand(),
 		authcmd.GetDecodeCommand(),
 		authcmd.GetSimulateCmd(),
+		zkgovcli.NewTxCmd(),
 	)
 
 	return cmd
